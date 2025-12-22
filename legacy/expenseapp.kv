@@ -1,0 +1,111 @@
+#:kivy 1.0
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+ScreenManagement:
+    transition: FadeTransition()
+    MainScreen:
+    LoadScreen:
+    EditorScreen:
+    SaveScreen:
+
+<MainScreen>:
+    name: 'main'
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: root.main_wall
+    MainScreenWidgets:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        BoxLayout:
+            orientation:'vertical'
+            size_hint: .2, .2
+            Button:
+                on_release: app.root.current = 'editor'
+                text: 'NEW'
+                size_hint: None, None
+                size: '100dp','40dp'
+                background_color: 0.31 , .87 , .62 , .5
+                on_press: self.parent.parent.on_press_new(self)
+            Button:
+                on_release: app.root.current = 'load'
+                text: 'LOAD'
+                size_hint: None, None
+                size: '100dp','40dp'
+                background_color: 0.31 , .87 , .62 , .5
+                on_press: self.parent.parent.on_press_load(self)
+
+<EditorScreen>:
+    name: 'editor'
+    EditorScreenWidgets:
+        Button:
+            id: main_scr
+            text: 'MAIN SCREEN'
+            background_color: 0.24, 0.64, 0.96, 1
+            on_press: app.root.current = 'main'
+        Button:
+            id: load
+            text: 'SAVE'
+            background_color: 0.24, 0.64, 0.96, 1
+            on_press: app.root.current = 'save'
+        Button:
+            id: clear
+            text: 'CLEAR'
+            background_color: 0.24, 0.64, 0.96, 1
+            on_press: self.parent.on_press_clear(self)
+
+<SaveScreen>:
+    name: 'save'
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: root.save_wall
+    SaveScreenWidgets:
+        cols: 1
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center'
+            BoxLayout:
+                orientation:'vertical'
+                size_hint: .2, .2
+                TextInput:
+                    id: save_name
+                    size_hint: None, None
+                    size: '200dp','30dp'
+                    pos_hint: {"center_x": .5}
+                Button:
+                    on_release: app.root.current = 'editor'
+                    text: 'SAVE'
+                    size_hint: None, None
+                    size: '100dp','40dp'
+                    pos_hint: {"center_x": .5}
+                    background_color: 0.31 , .87 , .62 , .5
+                    on_press: self.parent.parent.parent.on_press_save(self, save_name.text)
+                    on_release: save_name.text = ''
+        BoxLayout:
+            size_hint: 1, .06
+            Button:
+                text: 'EDIT'
+                size_hint: .5, 1
+                background_color: 0.24, 0.64, 0.96, 1
+                on_press: app.root.current = 'editor'
+            Button:
+                text: 'MAIN'
+                size_hint: .5, 1
+                background_color: 0.24, 0.64, 0.96, 1
+                on_press: app.root.current = 'main'
+
+<LoadScreen>:
+    name: 'load'
+    LoadScreenWidgets:
+        Button:
+            text: 'MAIN'
+            on_press: app.root.current = 'main'
+            background_color: 210, 1, 0, 1
+        Button:
+            text: 'EDIT'
+            size_hint_x: .2
+            background_color: 210, 1, 0, 1
+            on_press: app.root.current = 'editor'
