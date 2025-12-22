@@ -1,2 +1,3 @@
-# daily-expense-tracker-mobile
+# Daily Expense Tracker Mobile
+
 Minimalistic mobile expense tracker
