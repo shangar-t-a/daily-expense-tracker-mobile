@@ -1,0 +1,25 @@
+[project]
+name = "daily-expense-tracker-mobile"
+dynamic = ["version"]
+description = "Minimalistic mobile expense tracker"
+authors = [
+    { name = "Shangar Arivazhagan (Keys)", email = "shangar202000@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+lint = ["ruff>=0.12.3"]
+test = ["tox>=4.30.2"]
+type = ["mypy>=1.18.1"]
+
+[build-system]
+requires = ["hatchling >= 1.28"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/"]
