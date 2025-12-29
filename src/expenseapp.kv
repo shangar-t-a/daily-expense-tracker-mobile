@@ -1,0 +1,436 @@
+#:kivy 2.2.0
+#:import MDScreen kivymd.uix.screen.MDScreen
+#:import MDTopAppBar kivymd.uix.appbar.MDTopAppBar
+#:import MDButton kivymd.uix.button.MDButton
+#:import MDButtonText kivymd.uix.button.MDButtonText
+#:import MDButtonIcon kivymd.uix.button.MDButtonIcon
+#:import MDIconButton kivymd.uix.button.MDIconButton
+#:import MDCard kivymd.uix.card.MDCard
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDTextFieldHintText kivymd.uix.textfield.MDTextFieldHintText
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDBoxLayout kivymd.uix.boxlayout.MDBoxLayout
+
+ScreenManagement:
+    current: "main"
+
+    MainScreen:
+    EditorScreen:
+    LoadScreen:
+
+# ----------------------------
+# MAIN SCREEN
+# ----------------------------
+<MainScreen>:
+    name: "main"
+    
+    canvas.before:
+        Rectangle:
+            source: "images/mainscreen_bg.jpg"
+            pos: self.pos
+            size: self.size
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: "24dp"
+        spacing: "16dp"
+
+        # Top spacer
+        Widget:
+            size_hint_y: 0.2
+
+        # App Title
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint_y: 0.2
+            spacing: "4dp"
+
+            MDLabel:
+                text: "DAILY EXPENSE TRACKER"
+                font_size: "22sp"
+                bold: True
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            MDLabel:
+                text: "BY KEYS"
+                font_size: "14sp"
+                theme_text_color: "Secondary"
+                halign: "center"
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        # Middle spacer
+        Widget:
+            size_hint_y: 0.2
+
+        # Action Buttons
+        AnchorLayout:
+            anchor_x: "center"
+            anchor_y: "center"
+
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "16dp"
+                size_hint: None, None
+                width: "130dp"
+                height: self.minimum_height
+
+                MDButton:
+                    style: "filled"
+                    size: "280dp", "60dp"
+                    on_release: app.root.current = "editor"
+
+                    MDButtonIcon:
+                        icon: "note-plus"
+                        size_hint_y: None
+                        height: "24dp"
+                        pos_hint: {"center_y": 0.5}
+
+                    MDButtonText:
+                        text: "New Entry"
+                        pos_hint: {"center_y": 0.5}
+
+                MDButton:
+                    style: "filled"
+                    size: "280dp", "60dp"
+                    on_release: app.root.current = "load"
+
+                    MDButtonIcon:
+                        icon: "folder-open"
+                        size_hint_y: None
+                        height: "24dp"
+                        pos_hint: {"center_y": 0.5}
+
+                    MDButtonText:
+                        text: "Load Entry"
+                        pos_hint: {"center_y": 0.5}
+
+        # Bottom spacer
+        Widget:
+            size_hint_y: 0.2
+
+
+# ----------------------------
+# EDITOR SCREEN
+# ----------------------------
+<EditorScreen>:
+    name: "editor"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: "0dp"
+        md_bg_color: 0.95, 0.97, 1, 1
+
+        # Top Toolbar
+        MDCard:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "64dp"
+            md_bg_color: 0.18, 0.49, 0.96, 1
+            radius: [0, 0, 0, 0]
+            elevation: 8
+            padding: "12dp"
+            spacing: "12dp"
+            
+            MDIconButton:
+                icon: "arrow-left"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.root.current = "main"
+                size_hint: None, None
+                size: "48dp", "48dp"
+                
+            MDLabel:
+                text: "Expense Entry"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                font_size: "22sp"
+                bold: True
+                pos_hint: {"center_y": 0.5}
+                
+            Widget:
+                
+            MDIconButton:
+                icon: "calculator"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.calculate()
+                size_hint: None, None
+                size: "48dp", "48dp"
+                
+            MDIconButton:
+                icon: "broom"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.clear()
+                size_hint: None, None
+                size: "48dp", "48dp"
+
+        # Save Name and Button Section
+        MDCard:
+            orientation: "vertical"
+            size_hint_y: None
+            height: "100dp"
+            padding: "16dp"
+            spacing: "8dp"
+            elevation: 2
+            radius: [0, 0, 0, 0]
+            md_bg_color: 0.93, 0.95, 1, 1
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: "12dp"
+
+                MDTextField:
+                    id: save_name
+                    mode: "outlined"
+                    size_hint_x: 0.65
+                    
+                    MDTextFieldHintText:
+                        text: "Entry name (e.g., Weekly Groceries)"
+
+                MDButton:
+                    style: "filled"
+                    size_hint_x: 0.35
+                    on_release: app.save(save_name.text)
+                    
+                    MDButtonText:
+                        text: "Save"
+
+        # Data Grid Section
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: "16dp"
+            spacing: "8dp"
+
+            # Header Row
+            MDCard:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: "52dp"
+                padding: "16dp", "14dp"
+                spacing: "8dp"
+                elevation: 4
+                radius: [8, 8, 0, 0]
+                md_bg_color: 0.18, 0.49, 0.96, 1
+
+                MDLabel:
+                    text: "Item Description"
+                    font_size: "14sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    halign: "left"
+                    size_hint_x: 0.5
+
+                MDLabel:
+                    text: "Balance"
+                    font_size: "14sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    halign: "center"
+                    size_hint_x: 0.25
+
+                MDLabel:
+                    text: "Expense"
+                    font_size: "14sp"
+                    bold: True
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 0, 1
+                    halign: "center"
+                    size_hint_x: 0.25
+
+            # Scrollable Data Grid
+            ScrollView:
+                do_scroll_x: False
+                
+                MDCard:
+                    orientation: "vertical"
+                    padding: "8dp"
+                    spacing: "0dp"
+                    elevation: 1
+                    radius: [0, 0, 8, 8]
+                    size_hint_y: None
+                    height: self.minimum_height
+                    md_bg_color: 1, 1, 1, 1
+
+                    GridLayout:
+                        id: grid
+                        cols: 3
+                        size_hint_y: None
+                        height: self.minimum_height
+                        row_default_height: "64dp"
+                        row_force_default: True
+                        spacing: "8dp"
+
+        # Bottom Summary and Actions
+        MDCard:
+            orientation: "vertical"
+            size_hint_y: None
+            height: "180dp"
+            padding: "16dp"
+            spacing: "12dp"
+            elevation: 1
+            radius: [0, 0, 0, 0]
+            md_bg_color: 1, 1, 1, 1
+
+            # Totals Row
+            MDBoxLayout:
+                orientation: "horizontal"
+                spacing: "16dp"
+                size_hint_y: None
+                height: "80dp"
+
+                # Total Expense Card
+                MDCard:
+                    orientation: "vertical"
+                    padding: "12dp"
+                    spacing: "4dp"
+                    size_hint_x: 0.5
+                    elevation: 2
+                    radius: [12, 12, 12, 12]
+                    md_bg_color: 1, 0.9, 0.9, 1
+
+                    MDLabel:
+                        text: "Total Expense"
+                        font_size: "12sp"
+                        theme_text_color: "Secondary"
+                        halign: "center"
+                        size_hint_y: 0.4
+
+                    MDLabel:
+                        id: total_exp
+                        text: "₹0.00"
+                        font_size: "20sp"
+                        bold: True
+                        theme_text_color: "Custom"
+                        text_color: 0.8, 0, 0, 1
+                        halign: "center"
+                        size_hint_y: 0.6
+
+                # Remaining Balance Card
+                MDCard:
+                    orientation: "vertical"
+                    padding: "12dp"
+                    spacing: "4dp"
+                    size_hint_x: 0.5
+                    elevation: 2
+                    radius: [12, 12, 12, 12]
+                    md_bg_color: 0.9, 1, 1, 1
+
+                    MDLabel:
+                        text: "Remaining"
+                        font_size: "12sp"
+                        theme_text_color: "Secondary"
+                        halign: "center"
+                        size_hint_y: 0.4
+
+                    MDLabel:
+                        id: total_bal
+                        text: "₹0.00"
+                        font_size: "20sp"
+                        bold: True
+                        theme_text_color: "Custom"
+                        text_color: 0, 0.6, 0.6, 1
+                        halign: "center"
+                        size_hint_y: 0.6
+
+            # Back Button
+            MDButton:
+                style: "text"
+                size_hint_y: None
+                height: "48dp"
+                on_release: app.root.current = "main"
+                
+                MDButtonText:
+                    text: "Back to Main"
+
+
+# ----------------------------
+# LOAD SCREEN
+# ----------------------------
+<LoadScreen>:
+    name: "load"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: 0.95, 0.97, 1, 1
+
+        # Top Toolbar
+        MDCard:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "64dp"
+            md_bg_color: 0.18, 0.49, 0.96, 1
+            radius: [0, 0, 0, 0]
+            elevation: 8
+            padding: "12dp"
+            spacing: "12dp"
+            
+            MDIconButton:
+                icon: "arrow-left"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.root.current = "main"
+                size_hint: None, None
+                size: "48dp", "48dp"
+                
+            MDLabel:
+                text: "Saved Entries"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                font_size: "22sp"
+                bold: True
+                pos_hint: {"center_y": 0.5}
+                
+            Widget:
+                
+            MDIconButton:
+                icon: "plus-circle"
+                theme_text_color: "Custom"
+                text_color: 0, 0, 0, 1
+                on_release: app.clear(); app.root.current = "editor"
+                size_hint: None, None
+                size: "48dp", "48dp"
+
+        # Scrollable Entry List
+        MDCard:
+            orientation: "vertical"
+            padding: "16dp"
+            spacing: "0dp"
+            elevation: 0
+            radius: [0, 0, 0, 0]
+            
+            ScrollView:
+                do_scroll_x: False
+
+                MDBoxLayout:
+                    id: load_box
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: "12dp"
+
+        # Bottom Navigation
+        MDCard:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "72dp"
+            padding: "16dp"
+            spacing: "0dp"
+            elevation: 1
+            radius: [0, 0, 0, 0]
+            md_bg_color: 1, 1, 1, 1
+
+            MDButton:
+                style: "text"
+                size_hint_y: None
+                height: "48dp"
+                on_release: app.root.current = "main"
+                
+                MDButtonText:
+                    text: "Back to Main"
+
