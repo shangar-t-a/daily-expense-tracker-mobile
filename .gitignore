@@ -208,3 +208,4 @@ __marimo__/
 
 # Project specific ignores
 data.json
+!src/buildozer.spec
